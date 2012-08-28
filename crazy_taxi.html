@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+
+  </head>
+  <body>
+    <canvas id="canvas" width="719" height="478" style="background:url('test2.png') no-repeat"></canvas>
+	
+<script src="./ocanvas-2.2.1.min.js"></script>
+    <script type="text/javascript">
+	//console.log("calling script");
+var canvas = oCanvas.create({
+	canvas: "#canvas"
+	
+});
+
+var image1 = canvas.display.image({
+	x: 359.5,
+	y: 120,
+	origin: { x: "center", y: "center" },
+	image: "car2.png",
+	height:.12,
+	width: .12,
+	zindex: 1
+});
+var image = canvas.display.image({
+	x: 359.5,
+	y: 350,
+	origin: { x: "center", y: "center" },
+	image: "car3.png",
+	zindex: 2
+});
+
+
+
+canvas.addChild(image1);
+canvas.addChild(image);
+var i=0;
+	
+canvas.bind("keypress", function (e) {
+	//image1.animate({ y: image1.y+500 ,height: image1.height+84.57,width: image1.width+174}, {duration: 1000});
+	if(i==0){
+			
+			var keys = e.keyCode;
+			
+			if (keys==32){
+				i=1;
+				image.stop().animate({ y: image.y-170}, {duration: 250,callback:function(){
+					image.animate({ y: image.y+170} ,{easing: "ease-in-sine",duration: 200,callback:function(){
+					i=0
+					;
+					}});
+				}});
+			}	
+			//console.log(e);
+			else if (keys==39 && image.x<440){
+				i=1;
+				image.animate({rotation: 45,x: image.x+120}, {duration: 50, callback:function(){
+				
+						image.animate({rotation:0,x: image.x+40}, {duration: 20,callback:function(){i=0;}});
+					
+				}});
+			}	
+			else if(keys==37 && image.x>220){
+				i=1;
+				
+				image.animate({rotation: -45,x: image.x-120}, {duration: 50, callback:function(){
+				
+						image.animate({rotation: 0,x: image.x-40}, {duration: 20,callback:function(){i=0;}});
+					
+				}});
+		
+				
+			
+			}
+	}});
+
+
+canvas.addChild(image);
+canvas.addChild(image1);
+
+image1.animate({ y: image1.y+500 ,height: image1.height+146.57,width: image1.width+250}, {duration: 5000});
+
+    </script>
+</body>
+
+</html>
+
