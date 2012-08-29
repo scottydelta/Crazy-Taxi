@@ -13,60 +13,107 @@ var canvas = oCanvas.create({
 	canvas: "#canvas"
 	
 });
+var img1;
 
+var image = canvas.display.image({
+	x: 359.5,
+	y: 350,
+	origin: { x: "center", y: "center" },
+	image: "car3.png"
+});
 var image1 = canvas.display.image({
 	x: 359.5,
 	y: 120,
 	origin: { x: "center", y: "center" },
 	image: "car2.png",
-	height:.12,
-	width: .12,
-	zindex: 1
+	height: 0.12,
+	width: .12*2.05,
 });
-var image = canvas.display.image({
+movecar(getNewCar());
+
+function getNewCar() {
+var x = canvas.display.image({
 	x: 359.5,
-	y: 350,
+	y: 120,
 	origin: { x: "center", y: "center" },
-	image: "car3.png",
-	zindex: 2
+	image: "car2.png",
+	height: 0.12,
+	width: .12*2.05,
 });
+return x;
+}
 
-
-
-canvas.addChild(image1);
 canvas.addChild(image);
-var i=0;
+canvas.addChild(image1);
+function movecar(img,speed)
+{
+   console.log(speed);
+   console.log(typeof(speed));
+   if(typeof(speed)=='undefined')
+    speed=250;
 	
-canvas.bind("keypress", function (e) {
-	//image1.animate({ y: image1.y+500 ,height: image1.height+84.57,width: image1.width+174}, {duration: 1000});
-	if(i==0){
-			
+   console.log(img.y);
+   img1=img;
+   canvas.addChild(img);
+   var r=parseInt(Math.random()*3);
+   //alert(r);
+   var dw;
+   if(r==0)
+    dw=-350;
+   else if(r==1)
+    dw=0;
+   else if(r==2)
+    dw=350;
+	var count=0;
+	
+	var ani=setInterval(function(){
+	count++;
+	img.x=img.x+dw/speed;
+	img.y=img.y+500/speed;
+	img.width=img.width+250/speed;
+	img.height=img.height+146.57/speed;
+	canvas.redraw();
+	if(count>speed)
+	 clearInterval(ani);
+	 
+	
+	},10);
+	
+	//img.animate({y: img.y+500,height: img.height+146.57,width: img.width+250,x: img.x+dw}, {duration: 10000}, function() {
+	//});
+	};
+	
+
+var jumptest=0;
+canvas.bind("keyup", function (e) {
+
+	if(jumptest==0){
 			var keys = e.keyCode;
 			
+
 			if (keys==32){
-				i=1;
+				jumptest=1;
 				image.stop().animate({ y: image.y-170}, {duration: 250,callback:function(){
 					image.animate({ y: image.y+170} ,{easing: "ease-in-sine",duration: 200,callback:function(){
-					i=0
+					jumptest=0
 					;
 					}});
 				}});
 			}	
 			//console.log(e);
 			else if (keys==39 && image.x<440){
-				i=1;
+				jumptest=1;
 				image.animate({rotation: 45,x: image.x+120}, {duration: 50, callback:function(){
 				
-						image.animate({rotation:0,x: image.x+40}, {duration: 20,callback:function(){i=0;}});
+				image.animate({rotation:0,x: image.x+40}, {duration: 20,callback:function(){jumptest=0;}});
 					
 				}});
-			}	
+			}		
 			else if(keys==37 && image.x>220){
-				i=1;
+	            jumptest=1;
 				
 				image.animate({rotation: -45,x: image.x-120}, {duration: 50, callback:function(){
-				
-						image.animate({rotation: 0,x: image.x-40}, {duration: 20,callback:function(){i=0;}});
+				image.animate({rotation: 0,x: image.x-40}, {duration: 20,callback:function(){jumptest=0;}});
 					
 				}});
 		
@@ -74,13 +121,8 @@ canvas.bind("keypress", function (e) {
 			
 			}
 	}});
-
-
 canvas.addChild(image);
 canvas.addChild(image1);
-
-image1.animate({ y: image1.y+500 ,height: image1.height+146.57,width: image1.width+250}, {duration: 5000});
-
     </script>
 </body>
 
