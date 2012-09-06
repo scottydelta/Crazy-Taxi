@@ -8,27 +8,31 @@
 	
 <script src="./ocanvas-2.2.1.min.js"></script>
     <script type="text/javascript">
-	//console.log("calling script");
+	////console.log("calling script");
 var canvas = oCanvas.create({
 	canvas: "#canvas"
 	
 });
 var img1;
+var speed;
+var isstar=0;
+
 
 var image = canvas.display.image({
 	x: 359.5,
 	y: 350,
 	origin: { x: "center", y: "center" },
-	image: "car3.png"
+	image: "car3.png",
+	zIndex:3,
 });
-var image1 = canvas.display.image({
+/*var image1 = canvas.display.image({
 	x: 359.5,
 	y: 120,
 	origin: { x: "center", y: "center" },
 	image: "car2.png",
 	height: 0.12,
 	width: .12*2.05,
-});
+});*/
 movecar(getNewCar());
 function getstar(){
 return canvas.display.image({
@@ -38,6 +42,7 @@ return canvas.display.image({
   image: "splash.png",
   width:100,
   height:100,
+  zIndex:2,
   });
   }
 function getNewCar() {
@@ -48,26 +53,30 @@ var x = canvas.display.image({
 	image: "car2.png",
 	height: 0.12,
 	width: .12*2.05,
+	zIndex:3,
 });
 return x;
 }
 
 canvas.addChild(image);
-canvas.addChild(image1);
-function movecar(img,speed)
+
+canvas.addChild(img1);
+function movecar(img,speed1)
 {
-    var dy=500,coll=75;
-   //console.log(speed);
-   //console.log(typeof(speed));
+    var dy=500,coll=100;
+   ////console.log(speed);
+   ////console.log(typeof(speed));
+   	speed=speed1;
    if(typeof(speed)=='undefined')
     speed=500;
+
 	
-   //console.log(img.y);
+   ////console.log(img.y);
    img1=img;
    canvas.addChild(img);
    var r=parseInt(Math.random()*3);
    //alert(r);
-   r=1;
+  // r=1;
    var dw;
    if(r==0)
     dw=-350;
@@ -87,31 +96,74 @@ function movecar(img,speed)
 	img.width=img.width+250/speed;
 	img.height=img.height+146.57/speed;
 	canvas.redraw();
+	////console.log(isstar);
+	if(isstar>=2)
+    {
+       isstar++;
+        if(isstar==4)
+       {
+        canvas.removeChild(star);
+		////console.log('removed');
+        isstar=0;
+       }
+     }
+    if(isstar==1)
+    {
+	  canvas.removeChild(star);
+      canvas.addChild(star);
+      ////console.log('added');
+      isstar=2;
+    }
 
 
 
 	
 	//alert(img1.y+" "+image.y);
-	if(image.y-img.y<20 && image.y-img.y>-60 && image.x==img.x && jumptest==0 && r==1)
+	// //console.log(move);
+	if(image.y-img.y<20 && image.y-img.y>-70 && image.x+move*120==img.x && jumptest==0 && r==1)
 	 {
 
 	  star=getstar();
+       canvas.removeChild(star);
+	  if(isstar==0)
+	  isstar=1;
+
+	  if(move==0)
+	  {
 	  star.x=img.x;
 	  star.y=img.y;
-      canvas.addChild(star);
+	  img.y-=coll*dy/speed;
+	  img.x-=coll*dw/speed;
+	  img.width-=coll*250/speed;
+      img.height-=coll*146.57/speed;
+	  count-=coll;
+	  
+	  }
+	  else
+	  {
+	  
+	  star.x=(image.x+img.x)/2;
+	  star.y=(image.y+img.y)/2;
+	     if(image.x>359.5)
+		 {
+	       image.x=359.5+120;
+		   //console.log('Working');
+		   }
+	     else
+	       image.x=359.5-120;
+	  }
 
-	  canvas.removeChild(star);
-	  img.y-=coll*dy/speed;
-	  img.x-=coll*dw/speed;
-	  img.width-=coll*250/speed;
-      img.height-=coll*146.57/speed;
-	  count-=coll;
+	  
+	  }
+     else if(image.y-img1.y<20 && image.y-img1.y>-70 && image.x>359.5 && jumptest==0 && r==2)
+	 {
+	  //console.log('Colloided!');
+	  star=getstar();
+	  	  star.x=img.x;
+	  star.y=img.y;
 
-	  
-	  }
-      else if(image.y-img1.y<20 && image.y-img1.y>-60 && image.x>359.5 && jumptest==0 && r==2)
-	 {
-	  console.log('Colloided!');
+	  if(isstar==0)
+	  isstar=1;
 	  img.y-=coll*dy/speed;
 	  img.x-=coll*dw/speed;
 	  img.width-=coll*250/speed;
@@ -119,9 +171,15 @@ function movecar(img,speed)
 	  count-=coll;
 	  
 	  }
-      else if(image.y-img1.y<20 && image.y-img1.y>-60 && image.x<359.5 && jumptest==0 && r==0)
+      else if(image.y-img1.y<20 && image.y-img1.y>-70 && image.x<359.5 && jumptest==0 && r==0)
 	 {
-	  console.log('Colloided!');
+	  //console.log('Colloided!');
+	  star=getstar();
+	  star.x=img.x;
+	  star.y=img.y;
+
+	  if(isstar==0)
+	  isstar=1;
 	  img.y-=coll*dy/speed;
 	  img.x-=coll*dw/speed;
 	  img.width-=coll*250/speed;
@@ -129,6 +187,7 @@ function movecar(img,speed)
 	  count-=coll;
 	  
 	  }
+	 
 	 if(count>speed)
 	{
 	img.y=120;
@@ -145,7 +204,7 @@ function movecar(img,speed)
 	};
 	
 
-var jumptest=0;
+var jumptest=0,move=0;
 canvas.bind("keypress", function (e) {
 
 	if(jumptest==0){
@@ -153,34 +212,41 @@ canvas.bind("keypress", function (e) {
 			
 			if (keys==32){
 				jumptest=1;
+				speed-=100;
+				
 				image.stop().animate({ y: image.y-170}, {duration: 400,callback:function(){
 					image.animate({ y: image.y+170} ,{easing: "ease-in-sine",duration: 400,callback:function(){
 					jumptest=0;
+					speed+=100;
 					}});
 				}});
 			}	
-			//console.log(e);
+			////console.log(e);
 			else if (keys==39 && image.x<440){
 				jumptest=1;
+				move=1;
 				image.animate({rotation: 45,x: image.x+120}, {duration: 50, callback:function(){
 				
-						image.animate({rotation:0,x: image.x+40}, {duration: 20,callback:function(){jumptest=0;}});
+						image.animate({rotation:0,x: image.x+40}, {duration: 20,callback:function(){jumptest=0;move=0;}});
 					
 				}});
+				
 			}	
 			else if(keys==37 && image.x>220){
 				jumptest=1;
-				
+                move=-1;
 				image.animate({rotation: -45,x: image.x-120}, {duration: 50, callback:function(){
 				
-						image.animate({rotation: 0,x: image.x-40}, {duration: 20,callback:function(){jumptest=0;}});
+						image.animate({rotation: 0,x: image.x-40}, {duration: 20,callback:function(){jumptest=0;move=0;}});
 					
 				}});
+				
 				}
 	}
 });
-canvas.addChild(image);
-canvas.addChild(image1);
+//canvas.addChild(image);
+//alert('hi');
+//canvas.addChild(image1);
     </script>
 </body>
 
