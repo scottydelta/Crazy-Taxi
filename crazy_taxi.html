@@ -1,7 +1,6 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-
   </head>
   <body>
     <canvas id="canvas" width="719" height="478" style="background:url('test2.png') no-repeat"></canvas>
@@ -22,7 +21,7 @@ var image = canvas.display.image({
 	x: 359.5,
 	y: 350,
 	origin: { x: "center", y: "center" },
-	image: "car3.png",
+	image: "car3.png",//connected components and bipartite mansion
 	zIndex:3,
 });
 /*var image1 = canvas.display.image({
@@ -61,11 +60,13 @@ return x;
 canvas.addChild(image);
 
 canvas.addChild(img1);
+function checkcoll()
+{
+
+}
 function movecar(img,speed1)
 {
     var dy=500,coll=100;
-   ////console.log(speed);
-   ////console.log(typeof(speed));
    	speed=speed1;
    if(typeof(speed)=='undefined')
     speed=500;
