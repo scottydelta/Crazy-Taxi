@@ -7,230 +7,171 @@
 	
 <script src="./ocanvas-2.2.1.min.js"></script>
     <script type="text/javascript">
-	////console.log("calling script");
-var ctx = document.getElementById("canvas").getContext("2d");
+	
+	
+	
+//OCANVAS INSTANTIATION
 var canvas = oCanvas.create({
 	canvas: "#canvas"
-	
-});
-var img1;
-var speed;
-var isstar=0;
+    });	
 
 
-var image = canvas.display.image({
-	x: 359.5,
-	y: 350,
-	origin: { x: "center", y: "center" },
-	image: "taxi.png",//connected components and bipartite mansion
-	zIndex:3,
-});
-/*var image1 = canvas.display.image({
-	x: 359.5,
-	y: 120,
-	origin: { x: "center", y: "center" },
-	image: "car2.png",
-	height: 0.12,
-	width: .12*2.05,
-});*/
-movecar(getNewCar());
-function getstar(){
-return canvas.display.image({
-  x:0,
-  y:0,
-  origin: { x: "center", y: "center" },
-  image: "splash.png",
-  width:100,
-  height:100,
-  zIndex:2,
-  });
-  }
-function getNewCar() {
-var x = canvas.display.image({
-	x: 359.5,
-	y: 120,
-	origin: { x: "center", y: "center" },
-	image: "car2.png",
-	height: 0.12,
-	width: .12*2.05,
-	zIndex:3,
-});
-return x;
+// GLOBAL CONSTANTS
+var ourCar;
+var isPosReady=0;
+
+//GLOBAL LISTS
+var badCar=new Array();
+var randomPos=[0,0,0];
+var laneArray = new Array(3);
+var laneVariables = {"laneSpeed": 50, "lanedy": 5, "laney": 110};
+jumptest=0;
+
+//HELPER FUNCTIONS
+function changeSpeed(ds,dt){
+	var limit=ourcar.ourspeed+ds;
+	var changeSpeedInt=setInterval(function(){
+			ourcar.ourspeed+=1;
+			if(ourcar.ourspeed==limit)
+				clearInterval(changeSpeedInt);
+		}, (dt/ds));
 }
 
-canvas.addChild(image);
-
-canvas.addChild(img1);
-function checkcoll()
-{
-
-}
-function movecar(img,speed1)
-{
-	
-    var dy=500,coll=100;
-   	speed=speed1;
-   if(typeof(speed)=='undefined')
-    speed=500;
-
-	
-   ////console.log(img.y);
-   img1=img;
-   canvas.addChild(img);
-   var r=parseInt(Math.random()*3);
-   //alert(r);
-  // r=1;
-   var dw;
-   if(r==0)
-    dw=-350;
-   else if(r==1)
-    dw=0;
-   else if(r==2)
-    dw=350;
-	var count=0;
-    var star;
-
-	var x = 1.0;
-	var imageObj = new Image();
-	imageObj.src = "laner.png"
-	var lanedy = 5;
-	var laney = 110;
-	var ani=setInterval(function(){
-	
-	count++;
-	img.x=img.x+dw/speed;
-	img.y=img.y+dy/speed;
-	img.width=img.width+250/speed;
-	img.height=img.height+146.57/speed;
-	canvas.redraw();
-	
-	laney+=lanedy;
-	if(laney>325.5){
-		laney=110;
-	}
-	ctx.save();
-	console.log(laney);
-	//ctx.transform(1,0,0,((laney-120)/(365.5-120)),0,0);
-	ctx.drawImage(imageObj,359.5-(((laney-110)/(325.5-110)*216))/2,laney,((laney-110)/(325.5-110)*216),((laney-110)/(325.5-110)*103));
-	
-	//imageObj.width: ;
-	//imageObj.height: ;
-	ctx.restore();
-	////console.log(isstar);
-	
-	if(isstar>=2)
-    {
-       isstar++;
-        if(isstar==4)
-       {
-        canvas.removeChild(star);
-		////console.log('removed');
-        isstar=0;
-       }
-     }
-    if(isstar==1)
-    {
-	  canvas.removeChild(star);
-      canvas.addChild(star);
-      ////console.log('added');
-      isstar=2;
-
-
-    }
-
-
-
-	
-	//alert(img1.y+" "+image.y);
-	// //console.log(move);
-	if(image.y-img.y<20 && image.y-img.y>-70 && image.x+move*120==img.x && jumptest==0 && r==1)
-	 {
-
-	  star=getstar();
-       canvas.removeChild(star);
-	  if(isstar==0)
-	  isstar=1;
-
-	  if(move==0)
-	  {
-	  star.x=img.x;
-	  star.y=img.y;
-	  img.y-=coll*dy/speed;
-	  img.x-=coll*dw/speed;
-	  img.width-=coll*250/speed;
-      img.height-=coll*146.57/speed;
-	  count-=coll;
-	  
-	  }
-	  else
-	  {
-	  
-	  star.x=(image.x+img.x)/2;
-	  star.y=(image.y+img.y)/2;
-	     if(image.x>359.5)
-		 {
-	       image.x=359.5+120;
-		   //console.log('Working');
-		   }
-	     else
-	       image.x=359.5-120;
-	  }
-
-	  
-	  }
-     else if(image.y-img1.y<20 && image.y-img1.y>-70 && image.x>359.5 && jumptest==0 && r==2)
-	 {
-	  //console.log('Colloided!');
-	  star=getstar();
-	  	  star.x=img.x;
-	  star.y=img.y;
-
-	  if(isstar==0)
-	  isstar=1;
-	  img.y-=coll*dy/speed;
-	  img.x-=coll*dw/speed;
-	  img.width-=coll*250/speed;
-      img.height-=coll*146.57/speed;
-	  count-=coll;
-	  
-	  }
-      else if(image.y-img1.y<20 && image.y-img1.y>-70 && image.x<359.5 && jumptest==0 && r==0)
-	 {
-	  //console.log('Colloided!');
-	  star=getstar();
-	  star.x=img.x;
-	  star.y=img.y;
-
-	  if(isstar==0)
-	  isstar=1;
-	  img.y-=coll*dy/speed;
-	  img.x-=coll*dw/speed;
-	  img.width-=coll*250/speed;
-      img.height-=coll*146.57/speed;
-	  count-=coll;
-	  
-	  }
-	 
-	 if(count>speed)
+function getRandomPos(){
+	for(var i=0;i<=2;i++)
 	{
-	img.y=120;
-	img.x=359.5;
-	img.width=0.12*2.05;
-	img.height=0.12;
-	movecar(img);
-	 clearInterval(ani);
-    }	 
-	},33);
+     randomPos[i]=Math.floor((Math.random()*2));
+	}
+	//console.log(randomPos);
+    isPosReady=1;
+}
+
+//INITIALISERS
+
+function initCar(canvas){
+	ourCar = canvas.display.image({
+		x: 359.5,
+		y: 350,
+		origin: { x: "center", y: "center" },
+		image: "car0.png",
+		ourSpeed : 0,
+		});
+	canvas.addChild(ourCar);
+	//alert('added');
+
+}
+
+function initTraffic(canvas){
+//	console.log(canvas);
+	var ddx=-350;
+	for(i=0;i<3;i++)
+	{
+	if(randomPos[i]!=0)
+	{
+		badCar.push(getCar(ddx));
+		//alert(badCar[badCar.length-1]);
+		canvas.addChild(badCar[badCar.length-1]);
+		badCar[badCar.length-1].animate({
+								x: badCar[badCar.length-1].x+ddx,
+								y: badCar[badCar.length-1].y+500,
+								width: badCar[badCar.length-1].width+250,
+								height:	badCar[badCar.length-1].height+146.57
+								},
+								{
+									easing: "ease-in-quint",
+									duration: 2000,
+									callback:function(){
+										canvas.removeChild(badCar.shift());}
+								}
+							);
+		}	
+	ddx+=350;
+	}
+	isPosReady=0;  
+
+}
+function initLanes(canvas){
+		var lane1 = canvas.display.image({
+			x: 359.5,
+			y: laneVariables.laney,
+			width: 0,
+			height: 0,
+			origin: { x: "center", y: "center" },
+			image: "laner.png",});
+		var lane2 = lane1.clone({});
+		var lane3 = lane1.clone({});
+		laneArray[0] = lane1;
+		laneArray[1] = lane2;
+		laneArray[2] = lane3;
+		canvas.addChild(laneArray[0]);
+		//canvas.addChild(laneArray[1]);
+		//canvas.addChild(laneArray[2]);
+		
+}
+
+//SPRITE GENERATORS
+
+function getCar(ddx)
+   {
+    var carNum=parseInt(Math.random()*4);
+    var x = canvas.display.image({
+	x: 359.5,
+	y: 120,
+	origin: { x: "center", y: "center" },
+	image: "car"+carNum+".png",
+	height: 0.12,
+	width: .12*2.05,
+	dx:ddx,
+   });
+   return x;
+   }
+
+   
+//GAME LOOP FUNCTIONS
+function moveLanes(){
 	
-	//img.animate({y: img.y+500,height: img.height+146.57,width: img.width+250,x: img.x+dw}, {duration: 10000}, function() {
-	//});
 
-	//ctx.transform(1,0,0,0.5,0,0)
-
-	};
 	
+	
+	laneVariables.laney+= laneVariables.lanedy;
+	if(laneVariables.laney>410){
+		laneVariables.laney=110;
+	}
+	
+	laneArray[0].x= 359.5-(((laneArray.laney-110)/(410-110)*314.5))/2;
+	laneArray[0].y= laneVariables.laney;
+	laneArray[0].width= (laneVariables.laney-110)/(410-100)*314.5;
+	laneArray[0].height= ((laneVariables.laney-110)/(410-100)*150);
+//	console.log(laneArray[0].y)
+	
+}
 
-var jumptest=0,move=0;
+function moveTraffic()
+{
+	for(var i=0;i<badCar.length;i++)
+	{
+	 
+  
+	}
+}
+
+
+
+//COLLISION HANDLERS 
+function checkCollision()
+{}
+function onCollision()
+{}
+
+
+
+//MAIN GAME LOOP
+canvas.setLoop(function(){
+	moveTraffic();
+	if(isPosReady)
+		initTraffic(canvas);
+	moveLanes();
+}).start();
 canvas.bind("keypress", function (e) {
 
 	if(jumptest==0){
@@ -238,32 +179,32 @@ canvas.bind("keypress", function (e) {
 			
 			if (keys==32){
 				jumptest=1;
-				speed-=100;
+				//speed-=100;
 				
-				image.stop().animate({ y: image.y-170}, {duration: 400,callback:function(){
-					image.animate({ y: image.y+170} ,{easing: "ease-in-sine",duration: 400,callback:function(){
+				ourCar.stop().animate({ y: ourCar.y-170}, {duration: 400,callback:function(){
+					ourCar.animate({ y: ourCar.y+170} ,{easing: "ease-in-sine",duration: 400,callback:function(){
 					jumptest=0;
-					speed+=100;
+					//speed+=100;
 					}});
 				}});
 			}	
 			////console.log(e);
-			else if (keys==39 && image.x<440){
+			else if (keys==39 && ourCar.x<440){
 				jumptest=1;
 				move=1;
-				image.animate({rotation: 45,x: image.x+120}, {duration: 50, callback:function(){
+				ourCar.animate({rotation: 45,x: ourCar.x+120}, {duration: 50, callback:function(){
 				
-						image.animate({rotation:0,x: image.x+40}, {duration: 20,callback:function(){jumptest=0;move=0;}});
+						ourCar.animate({rotation:0,x: ourCar.x+40}, {duration: 20,callback:function(){jumptest=0;move=0;}});
 					
 				}});
 				
 			}	
-			else if(keys==37 && image.x>220){
+			else if(keys==37 && ourCar.x>220){
 				jumptest=1;
                 move=-1;
-				image.animate({rotation: -45,x: image.x-120}, {duration: 50, callback:function(){
+				ourCar.animate({rotation: -45,x: ourCar.x-120}, {duration: 50, callback:function(){
 				
-						image.animate({rotation: 0,x: image.x-40}, {duration: 20,callback:function(){jumptest=0;move=0;}});
+						ourCar.animate({rotation: 0,x: ourCar.x-40}, {duration: 20,callback:function(){jumptest=0;move=0;}});
 					
 				}});
 				
@@ -273,16 +214,18 @@ canvas.bind("keypress", function (e) {
 
 
 
-canvas.redraw();
+//ONE TIME FUNCTIONS
+initLanes(canvas);
+initCar(canvas);
+setInterval(getRandomPos,500);
+//setInterval(function(){console.log(laneArray.length);},10);
 
-//canvas.addChild(image);
-//alert('hi');
-//canvas.addChild(image1);
+
+
     </script>
 </body>
 
 </html>
-
 
 
 
